@@ -74,5 +74,45 @@ class AI{
 		return $this->$server;
 	}
 	
-	
+	public function __construct(Server $server){
+		$this->server = $server;
+		
+		if($this->server->aiConfig["mobgenerate"]){
+			$this->tasks['ZombieGenerate'] = $this->getServer()->getScheduler()->scheduleRepeatTask(new CallbackTask([
+				$this,
+				"MobGenerate"
+			]), 20 * 45);
+			
+			$this->getServer()->getScheduler()->scheduleRepeatingTask(new CallbackTask([
+				$this,
+				"TimeFix"
+			]), 20);
+			
+			$this->getServer()->getScheduler()->scheduleRepeatingTask(new CallbackTask ([$this, "RotationTimer"]), 2);
+			
+			$this->ZombieAI = new ZombieAI($this);
+			$this->CowAI = new CowAI($this);
+			$this->PigAI = new PigAI($this);
+			$this->SheepAI = new SheepAI($this);
+			$this->ChickenAI = new ChickenAI($this);
+			$this->CreeperAI = new CreeperAI($this);
+			$this->SkeletonAI = new SkeletonAI($this);
+			$this->IronGolemAI = new IronGolemAI($this);
+			$this->PigZombieAI = new PigZombieAI($this);
+		}
+		
+		/*
+		 ************** API part *************
+		 */
+		
+		/**
+		 * @parm $r
+		 * Set Zombie Hatred rounte
+		 */
+		public function setZombieHatred_r($r){
+			$this->ZombieAI->hatred_r = $r;
+		}
+		
+		
+	}
 }
